@@ -1,0 +1,27 @@
+{
+    "name": "umobi/pinbank-client",
+    "description": "Cliente para integrar com a API de Pagamentos da Pinbank",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ramon Vicente",
+            "email": "ramonv@umobi.com.br"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "guzzlehttp/guzzle": "^6.3.1|^7.0",
+        "ext-json": "*",
+      "ext-openssl": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "8.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "PinBank\\": "src/",
+            "PinBank\\Tests": "tests/"
+        }
+    }
+}
