@@ -28,6 +28,7 @@ class Configuration
     protected $sandbox = false;
 
     protected $accessToken = '';
+
     protected $accessTokenExpireAt;
 
 

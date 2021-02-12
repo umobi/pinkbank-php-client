@@ -6,17 +6,16 @@ namespace PinBank\Requests;
 
 class IncluirCartaoSingleRequest implements \JsonSerializable
 {
-    private $Apelido;
-    private $NomeImpresso;
-    private $NumeroCartao;
-    private $DataValidade;
-    private $CodigoSeguranca;
-    private $ValidarCartao;
+    private string $Apelido;
+    private string $NomeImpresso;
+    private string $NumeroCartao;
+    private string $DataValidade;
+    private string $CodigoSeguranca;
+    private bool $ValidarCartao;
 
 
-    public function __construct($number, $holder, $expireDate, $cvv, $validateCard = true, $alias = null)
+    public function __construct($number, $holder, $expireDate, $cvv, $validateCard = false, $alias = null)
     {
-
         $this->NomeImpresso = $holder;
         $this->NumeroCartao = $number;
         $this->DataValidade = $expireDate;

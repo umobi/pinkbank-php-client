@@ -7,7 +7,9 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
+use PinBank\Api\BoletoApi;
 use PinBank\Api\ContaDigitalApi;
+use PinBank\Api\PixApi;
 use PinBank\Api\TransactionsApi;
 
 
@@ -23,9 +25,13 @@ class PinBank
      */
     protected $config;
 
-    private $transactionApi;
+    private TransactionsApi $transactionApi;
 
-    private $contaDigitalApi;
+    private ContaDigitalApi $contaDigitalApi;
+
+    private BoletoApi $boletoApi;
+
+    private PixApi $pixApi;
 
     /**
      * @param Configuration   $config
@@ -57,6 +63,8 @@ class PinBank
 
         $this->transactionApi = new TransactionsApi($this->config, $this->client);
         $this->contaDigitalApi = new ContaDigitalApi($this->config, $this->client);
+        $this->boletoApi = new BoletoApi($this->config, $this->client);
+        $this->pixApi = new PixApi($this->config, $this->client);
     }
 
     public function __call($method, array $args)

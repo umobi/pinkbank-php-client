@@ -11,12 +11,12 @@ use PinBank\Responses\ExtratoPosResponse;
 class ContaDigitalApi extends BaseApi
 {
 
-    public function extratoPosEncrypted(ExtratoPosRequest $request)
+    public function extratoPos(ExtratoPosRequest $request, $clientCode = null, $channelCode = null)
     {
         $payload = [
             "Data" => array_merge($request->jsonSerialize(), [
-                "CodigoCanal" => $this->config->getChannelCode(),
-                "CodigoCliente" => $this->config->getClientCode(),
+                "CodigoCanal" => $channelCode ?? $this->config->getChannelCode(),
+                "CodigoCliente" => $clientCode ?? $this->config->getClientCode(),
             ])
         ];
 

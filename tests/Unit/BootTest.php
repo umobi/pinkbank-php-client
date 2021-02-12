@@ -37,80 +37,100 @@ class BootTest extends TestCase
         $this->assertInstanceOf(PinBank::class, $this->client);
     }
 
-    public function testExtratoPos()
+    public function testNewTransaction()
     {
-        $request = new ExtratoPosRequest();
+        $request = new EfetuarTransacaoRequest(
+            "Fulano de Tal",
+            "4242424242424242",
+            "201912",
+            "123",
+            100,
+            "Ramon Vicente",
+            "02466862190"
+        );
 
-        $result = $this->client->extratoPosEncrypted($request);
+        $result = $this->client->efetuarTransacao($request);
+        $this->assertInstanceOf(TransactionResponse::class, $result);
+    }
+
+    public function testCaptureTransaction()
+    {
+        $request = new EfetuarTransacaoRequest(
+            "Fulano de Tal",
+            "4242424242424242",
+            "201912",
+            "123",
+            100,
+            "Ramon Vicente",
+            "02466862190"
+        );
+
+        $result = $this->client->efetuarTransacao($request);
+
+        $result = $this->client->capturarTransacao($result->nsu, 100);
+        $this->assertInstanceOf(CaptureResponse::class, $result);
+    }
+
+    public function testCancelTransaction()
+    {
+        $request = new EfetuarTransacaoRequest(
+            "Fulano de Tal",
+            "4242424242424242",
+            "201912",
+            "123",
+            100,
+            "Ramon Vicente",
+            "02466862190"
+        );
+
+        $result = $this->client->efetuarTransacao($request);
+
+        $result = $this->client->cancelarTransacao($result->nsu, 100);
+        $this->assertInstanceOf(CancelResponse::class, $result);
+    }
+
+    public function testQueryTransactions()
+    {
+        $request = new ExtratoPosRequest('2020-10-01', '2020-10-01');
+        $result = $this->client->extratoPos($request, 109207, 80);
 
         $this->assertInstanceOf(ExtratoPosResponse::class, $result);
     }
 
     public function testNewTransactionSplit()
     {
+        $request = new EfetuarTransacaoSplitRequest(
+            "Fulano de Tal",
+            "4242424242424242",
+            "201912",
+            "123",
+            100,
+            "Ramon Vicente",
+            "02466862190",
+            [[
+                'CodigoCliente' => 7309,
+                'Valor' => 40
+            ]]
+        );
 
-
-        $request = new EfetuarTransacaoSplitRequest();
-
-        $request->NomeImpresso = "Fulano de Tal";
-        $request->DataValidade = "201912";
-        $request->NumeroCartao = "4242424242424242";
-        $request->CodigoSeguranca = "123";
-        $request->Valor = 100;
-        $request->FormaPagamento = 1;
-        $request->QuantidadeParcelas = 1;
-        $request->DescricaoPedido = "Pedido Teste Desc";
-        $request->CpfComprador = "02466862190";
-        $request->NomeComprador = "Ramon Vicente";
-        $request->TransacaoPreAutorizada = true;
-        $request->Split = [[
-            'CodigoCliente' => 3510,
-            'CodigoCanal' => 47,
-            'Valor' => 100
-        ]];
-
-        $result = $this->client->efetuarTransacaoSplitEncrypted($request);
+        $result = $this->client->efetuarTransacaoSplit($request);
         $this->assertInstanceOf(TransactionResponse::class, $result);
     }
 
-    public function testNewTransaction()
+    public function testCreateCard()
     {
+        $request = new IncluirCartaoSingleRequest("4141414141414146", "Fulano de Tal", "202112", "123", true);
+        $result = $this->client->incluirCartao($request);
 
-
-        $request = new EfetuarTransacaoRequest();
-
-        $request->NomeImpresso = "Fulano de Tal";
-        $request->DataValidade = "201912";
-        $request->NumeroCartao = "4242424242424242";
-        $request->CodigoSeguranca = "123";
-        $request->Valor = 100;
-        $request->FormaPagamento = 1;
-        $request->QuantidadeParcelas = 1;
-        $request->DescricaoPedido = "Pedido Teste Desc";
-        $request->CpfComprador = "02466862190";
-        $request->NomeComprador = "Ramon Vicente";
-        $request->TransacaoPreAutorizada = true;
-
-        $result = $this->client->efetuarTransacaoEncrypted($request);
-        $this->assertInstanceOf(TransactionResponse::class, $result);
+        $this->assertInstanceOf(CardResponse::class, $result);
     }
 
-    public function disabletestCaptureTransaction()
+    public function testQueryCard()
     {
-        $result = $this->client->capturarTransacaoEncrypted("20029816", 100);
-        $this->assertInstanceOf(CaptureResponse::class, $result);
-    }
+        $request = new IncluirCartaoSingleRequest("4141414141414146", "Fulano de Tal", "202112", "123", true);
+        $result = $this->client->incluirCartao($request);
 
-    public function disabletestCancelTransaction()
-    {
-        $result = $this->client->cancelarTransacaoEncrypted("20029816", 100);
-        $this->assertInstanceOf(CancelResponse::class, $result);
-    }
-
-    public function disabletestCreateCard()
-    {
-        $request = new IncluirCartaoSingleRequest("4141414141414145", "Fulano de Tal", "202112", "123", true);
-        $result = $this->client->incluirCartaoEncrypted($request);
+        $result = $this->client->consultarDadosCartao($result->cardId);
         $this->assertInstanceOf(CardResponse::class, $result);
     }
 }

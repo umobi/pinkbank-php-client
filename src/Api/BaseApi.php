@@ -48,7 +48,6 @@ class BaseApi
                 $json = $content;
             }
 
-
             $body = Utils::jsonEncode($json, JSON_UNESCAPED_SLASHES);
 
             if (strpos($uri, 'Encrypted') > 0) {
@@ -59,7 +58,6 @@ class BaseApi
                         'Json' => $bodyEncrypted
                     ]
                 ]);
-
             }
 
             $options['body'] = $body;
